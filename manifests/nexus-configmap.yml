@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nexus-properties
+data:
+  nexus.properties: |
+    application-port-ssl=8443
+    nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml,${jetty.etc}/jetty-https.xml
+    ssl.etc=${karaf.data}/etc/ssl
+    

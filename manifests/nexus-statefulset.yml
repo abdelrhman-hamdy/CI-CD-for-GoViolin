@@ -13,14 +13,52 @@ spec:
       labels:
         app: nexus
     spec:
+
+      initContainers:
+        - name: create-empty-dir
+          image: alpine
+          command: ["mkdir", "/opt/sonatype/sonatype-work/nexus3/etc/ssl"]
+          volumeMounts:
+          - name: ssl
+            mountPath: /opt/sonatype/sonatype-work/nexus3/etc
+
       containers:
       - name: nexus
-        image: sonatype/nexus3:latest
+        image: sonatype/nexus3:3.50.0
         ports:
         - containerPort: 8081
+        - containerPort: 8082
+        #- containerPort: 8088
+        - containerPort: 8443
+
+
         volumeMounts:
         - name: nexus-data
           mountPath: /nexus-data
+
+        - name: ssl
+          mountPath: /opt/sonatype/sonatype-work/nexus3/etc/
+
+        - name: nexus-properties
+          mountPath: /opt/sonatype/sonatype-work/nexus3/etc/nexus.properties
+          subPath: nexus.properties
+
+
+        - name: keystore
+          mountPath: /opt/sonatype/sonatype-work/nexus3/etc/ssl/
+          readOnly: true
+
+      volumes:
+      - name: nexus-properties
+        configMap:
+          name: nexus-properties 
+      - name: keystore
+        secret:
+          secretName: keystore
+
+      - name : ssl 
+        emptyDir: {}
+
   volumeClaimTemplates:
   - metadata:
       name: nexus-data
@@ -28,4 +66,5 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi
+          storage: 2Gi
+      

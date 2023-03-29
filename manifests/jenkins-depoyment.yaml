@@ -1,12 +1,12 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: jenkins
 spec:
   selector:
     matchLabels:
       app:  jenkins # has to match .spec.template.metadata.labels
-  serviceName: "not-applicable"
+  #serviceName: "not-applicable"
   replicas: 1 # by default is 1
   template:
     metadata:
@@ -15,21 +15,13 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: abdelrhmanhamdy/jenkins:latest
+        image: 10.99.253.14:8082/jenkins:latest
         ports:
-            containerPort: 8080
-            protocol: TCP 
+        - containerPort: 8080
+          protocol: TCP
         #envFrom:
         #  - configMapRef:
         #      name: rabbitmq-config
         #  - secretRef:
         #      name: rabbitmq-secret
 
-        volumeMounts:
-        - name: rabbitmq-volume
-          mountPath: "/var/lib/rabbitmq"
-
-      volumes: 
-        - name: rabbitmq-volume
-          persistentVolumeClaim:
-            claimName: rabbitmq-pvc
