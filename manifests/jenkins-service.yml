@@ -6,7 +6,10 @@ spec:
   selector:
     app: jenkins
   ports:
+  - name:  http  
     port: 8080
     targetPort: 8080
-  type: NodePort
+    protocol: TCP
+
+  type: ClusterIP
 

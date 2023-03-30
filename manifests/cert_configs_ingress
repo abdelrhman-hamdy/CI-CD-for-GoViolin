@@ -1,0 +1,17 @@
+[req]
+prompt = no
+default_md = sha256
+distinguished_name = dn
+req_extensions = req_ext
+[dn]
+C = EG
+ST = Alexandria
+L = Alexandria
+O = Hamdy
+OU = IT 
+CN = devops.com 
+[req_ext]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = jenkins.dashboard
+DNS.2 = nexus.dashboard
