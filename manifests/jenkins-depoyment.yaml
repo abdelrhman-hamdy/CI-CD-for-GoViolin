@@ -21,7 +21,7 @@ spec:
         volumeMounts:
         - name: jenkins-data
           mountPath: /var/jenkins_home
-          
+
   volumeClaimTemplates:
   - metadata:
       name: jenkins-data
