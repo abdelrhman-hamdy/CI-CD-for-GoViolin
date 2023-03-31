@@ -1,17 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: jenkins
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app:  jenkins # has to match .spec.template.metadata.labels
-  
-  replicas: 1 
+      app:  jenkins
   template:
     metadata:
       labels:
-        app: jenkins # has to match .spec.selector.matchLabels
+        app: jenkins
     spec:
       containers:
       - name: jenkins
@@ -19,3 +18,15 @@ spec:
         ports:
         - containerPort: 8080
           protocol: TCP
+        volumeMounts:
+        - name: jenkins-data
+          mountPath: /var/jenkins_home
+          
+  volumeClaimTemplates:
+  - metadata:
+      name: jenkins-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
