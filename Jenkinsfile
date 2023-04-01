@@ -6,6 +6,9 @@ pipeline {
     }
 
     environment {
+        DOCKER_TLS_VERIFY="1"
+        DOCKER_HOST="tcp://192.168.49.2:2376"
+        DOCKER_CERT_PATH="/var/jenkins_home/docker"
         DOCKERFILE_PATH = 'app/Dockerfile'
         DOCKER_IMAGE_NAME = 'GoViolin'
         NEXUS_REPOSITORY = 'nexus:8082'
