@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: 'PIPELINE_TYPE', choices: ['CI', 'CD'], description: 'Select the type of pipeline to run')
+        choice(name: 'PIPELINE_TYPE', choices: ['build', 'Test'], description: 'Select the type of pipeline to run')
     }
 
     environment {
@@ -11,7 +11,7 @@ pipeline {
         NEXUS_REPOSITORY = 'nexus:8082'
         NEXUS_CREDENTIALS = 'nexus-credentials-id'
         KUBECONFIG_PATH = 'path/to/kubeconfig'
-        DEPLOYMENT_NAME = 'goviolin-deployment'
+        DEPLOYMENT_NAME = 'goviolin'
         DEPLOYMENT_NAMESPACE = 'goviolin'
     }
 
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Deploy using kubectl') {
             when {
-                expression { params.PIPELINE_TYPE == 'CD' }
+                expression { params.PIPELINE_TYPE == 'Test' }
             }
             steps {
                 script {
@@ -53,7 +53,7 @@ pipeline {
 
         stage('Check migration') {
             when {
-                expression { params.PIPELINE_TYPE == 'CD' }
+                expression { params.PIPELINE_TYPE == 'Test' }
             }
             steps {
                 script {

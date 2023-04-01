@@ -21,7 +21,21 @@ spec:
         volumeMounts:
         - name: jenkins-data
           mountPath: /var/jenkins_home
+        
+        - name: kubernates-secrets
+          mountPath: /var/jenkins_home
+          subPath: kubernates_secrets
 
+        - name: cluster-secrets
+          mountPath: /var/jenkins_home/kubernates_secrets/
+
+
+      volumes:    
+      - name: cluster-secrets
+        secret:
+          secretName: cluster-secrets
+      - name : kubernates-secrets
+        emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: jenkins-data

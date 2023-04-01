@@ -52,3 +52,4 @@ emailext-template
 mailer
 locale
 localization-zh-cn
+kubernetes
