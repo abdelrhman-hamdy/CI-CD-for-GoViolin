@@ -10,12 +10,14 @@ pipeline {
         DOCKER_HOST="tcp://192.168.49.2:2376"
         DOCKER_CERT_PATH="/var/jenkins_home/docker"
         DOCKERFILE_PATH = 'app/Dockerfile'
-        DOCKER_IMAGE_NAME = 'GoViolin'
+        DOCKER_IMAGE_NAME = 'goviolin'
         NEXUS_REPOSITORY = 'nexus:8082'
-        NEXUS_CREDENTIALS = 'nexus-credentials-id'
-        KUBECONFIG_PATH = 'path/to/kubeconfig'
+        NEXUS_PASS = 'admin'
+        NEXUS_USER = 'admin'
+        KUBECONFIG_PATH = 'connect_jenkins_kubernates/Kubernates_config_for_jenkins'
         DEPLOYMENT_NAME = 'goviolin'
-        DEPLOYMENT_NAMESPACE = 'goviolin'
+        DEPLOYMENT_NAMESPACE = 'default'
+        
     }
 
     stages {
@@ -23,10 +25,10 @@ pipeline {
             steps {
                 script {
                     // Determine the build tag
-                    env.DOCKER_IMAGE_TAG = "${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    env.DOCKER_IMAGE_TAG = "${NEXUS_REPOSITORY}/${env.DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}"
 
                     // Build the Docker image
-                    sh "docker build -t ${NEXUS_REPOSITORY}/${env.DOCKER_IMAGE_TAG} -f ${env.DOCKERFILE_PATH} ."
+                    sh  "cd ./app; docker build -t ${env.DOCKER_IMAGE_TAG} . "
                 }
             }
         }
@@ -34,29 +36,30 @@ pipeline {
         stage('Push Docker image to Nexus') {
             steps {
                 script {
-                    docker.withRegistry("${env.NEXUS_REPOSITORY}", "${env.NEXUS_CREDENTIALS}") {
+
                         // Push the Docker image to Nexus
-                        sh "docker push ${NEXUS_REPOSITORY}/${env.DOCKER_IMAGE_TAG}"
-                    }
+                        sh "docker login -u ${NEXUS_USER} -p ${NEXUS_PASS} ${NEXUS_REPOSITORY}"
+                        sh "docker push ${env.DOCKER_IMAGE_TAG}"
+                    
                 }
             }
         }
 
         stage('Deploy using kubectl') {
             when {
-                expression { params.PIPELINE_TYPE == 'Test' }
+                expression { params.PIPELINE_TYPE == 'build' }
             }
             steps {
                 script {
                     // Update the Kubernetes deployment with the new image
-                    sh "kubectl --kubeconfig ${env.KUBECONFIG_PATH} set image deployment/${env.DEPLOYMENT_NAME} ${env.DEPLOYMENT_NAME}=${env.DOCKER_IMAGE_TAG} -n ${env.DEPLOYMENT_NAMESPACE}"
+                    sh "kubectl --kubeconfig ${KUBECONFIG_PATH} set image deployment/${env.DEPLOYMENT_NAME} ${env.DEPLOYMENT_NAME}=${env.DOCKER_IMAGE_TAG} -n ${env.DEPLOYMENT_NAMESPACE}"
                 }
             }
         }
 
         stage('Check migration') {
             when {
-                expression { params.PIPELINE_TYPE == 'Test' }
+                expression { params.PIPELINE_TYPE == 'build' }
             }
             steps {
                 script {
