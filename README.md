@@ -5,12 +5,12 @@
 - [Introuduction](#introduction-)
 - [Tools](#tools-)
 - [Diagram](#diagram-)
-- [Set the Project](#set-the-project)
+- [Set the Project](#set-the-project-)
 - [Run The Pipeline](#run-the-piplinr)
 
 ## Introduction : 
 
-In this project, a website written in GO names GoViolin was deployed on a Kubernetes cluster. a Jenkins pipeline and a Nexus local repository were created in separate namespace within the Kubernetes cluster. The Jenkins pipeline will automate the build and deployment of our application, while the Nexus repository will serve as a centralized location for storing and managing our Docker images.
+In this project, a website written in GO named GoViolin was deployed on a Kubernetes cluster. a Jenkins pipeline and a Nexus local repository were created in separate namespace within the Kubernetes cluster. The Jenkins pipeline will automate the build and deployment of our application, while the Nexus repository will serve as a centralized location for storing and managing our Docker images.
 
 By following the project, you will have a fully functional website deployment on Kubernetes with a streamlined CI/CD pipeline
 
@@ -25,7 +25,9 @@ By following the project, you will have a fully functional website deployment on
 </p>
 
 
-## Prerequisites 
+## Set the Project: 
+
+
 
 minikube start
 
