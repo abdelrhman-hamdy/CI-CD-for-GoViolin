@@ -6,7 +6,7 @@
 - [Tools](#tools-)
 - [Diagram](#diagram-)
 - [Set the Cluster](#set-the-cluster-)
-- [Run The Pipeline](#run-the-piplinr)
+- [Run The Pipeline](#run-the-pipline-)
 
 ## Introduction : 
 
@@ -40,15 +40,15 @@ By following the project, you will have a fully functional website deployment on
   ```
 - #### Add DNS records in the host machine 
      To access Jenkins, and Nexus dashboard from your local browser, in addtion to the deployed website itself, we need to set this records in /etc/hosts
-```bash
-sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
-sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
-```
+  ```bash
+  sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
+  sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
+  ```
 
 - #### Create a minikube tunnel to access the Kubernates cluster from the host machine
-```bash
-minikube tunnel 
-```
+  ```bash
+  minikube tunnel 
+  ```
 - #### Access nexus dashboard from the Host Machine: 
   The URL of Nexus dashboard : https://nexus.dashboard/. <br> 
   To login, you need the password that resides in the nexus pod, you can get it using this command:
@@ -65,28 +65,31 @@ minikube tunnel
   - Configure to use HTTPS with port:8082 .
   - Enable anonymous pull . 
   - In realms,  Enable docker bearer token
+  
 - #### Create Jenkins :
      This script will Create the  Jenkins image from the Docker file, push it to Nexus, run the Kubernates manifest files to create Jenkins  
   ```bash
    bash jenkins.sh
   ```
 - #### Access jenkins dashboard :
-    https://jenkins.dashboard <br>
+    Jenkins Dashboard URL :  https://jenkins.dashboard <br>
     Jenkins user : hamdy <br>
     Jenkins pass : VTG266iFe4QfEBYL2eNRHH <br>
     
 ![jenkins](https://user-images.githubusercontent.com/69608603/229383523-14960241-d636-4e29-bbc2-b7651c9870b0.png)
 
 - #### Run GoViolin Website
-```bash
+  This script will build the Goviolin docker image, Push it to Nexus, and run all kubernates manifest files to deploy the application in a separate namespace 
+  ```bash
   bash app.sh
-```
+  ```
 
 ### Access the Website:
-    https://goviolin.com/
+  GoViolin Webiste URL : https://goviolin.com/
 
 ![goviolin](https://user-images.githubusercontent.com/69608603/229383473-3d5b955b-6aea-4578-a831-abc2aa47561a.png)
 
+## Run The Pipeline : 
 
 
 
