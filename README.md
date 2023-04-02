@@ -90,10 +90,11 @@ By following the project, you will have a fully functional website deployment on
 ![goviolin](https://user-images.githubusercontent.com/69608603/229383473-3d5b955b-6aea-4578-a831-abc2aa47561a.png)
 
 ## Run The Pipeline : 
+- #### Pipeline Diagram : 
 
-
-
-
+<p align="center">
+<a><img src="https://user-images.githubusercontent.com/69608603/229385047-e3ba27f8-39c6-4956-bf4a-e52da91285c3.jpeg" alt="centered image" height="600"/> </a>
+</p>
 
 
 
