@@ -5,12 +5,12 @@
 - [Introuduction](#introduction-)
 - [Tools](#tools-)
 - [Diagram](#diagram-)
-- [Set the Project](#set-the-cluster-)
+- [Set the Cluster](#set-the-cluster-)
 - [Run The Pipeline](#run-the-piplinr)
 
 ## Introduction : 
 
-In this project, a website written in GO named GoViolin was deployed on a Kubernetes cluster. a Jenkins pipeline and a Nexus local repository were created in separate namespace within the Kubernetes cluster. The Jenkins pipeline will automate the build and deployment of our application, while the Nexus repository will serve as a centralized location for storing and managing our Docker images.
+In this project, a website written in GO named GoViolin was deployed on a Kubernetes cluster. a Jenkins pipeline and a Nexus local repository were created in a separate namespace within the Kubernetes cluster. The Jenkins pipeline will automate the build and deployment of our application, while the Nexus repository will serve as a centralized location for storing and managing our Docker images.
 
 By following the project, you will have a fully functional website deployment on Kubernetes with a streamlined CI/CD pipeline
 
@@ -26,97 +26,66 @@ By following the project, you will have a fully functional website deployment on
  
 
 ## Set the Cluster : 
-Note : Make sure to have Kubectl,</b> and Minikube installed on your local machine 
-
-- #### Start the minikube : 
-```bash
-minikube start
-```
-
-- #### Create the Nexus repository manager statefulset
-```bash
-cd manifests/nexus/
-kubectl apply -f .
-```
-- #### Check Nexus pod is up and running
-```bash
- kubectl get pods
-```
-- #### Add nexus HTTPS Certificate to minikube :
-     In order for minikube and jenkins to pull and push Docker images securely from Nexus , we need to enable HTTPS in nexus, and trust its certificate in minikube 
-```bash
-cd manifests/nexus/
-minikube ssh 'sudo mkdir -p /etc/docker/certs.d/nexus:8082'
-minikube cp registry.crt /etc/docker/certs.d/nexus:8082/ca.crt
-minikube ssh 'ls  /etc/docker/certs.d/nexus:8082/ca.crt'
-```
+- #### Prerequisites :
+    - Make sure to have Kubectl, and Minikube installed on your local machine 
+    - Trust the Nexus Certificate in the Docker installed in your local machine
+      ```bash
+      sudo mkdir -p /etc/docker/certs.d/nexus:8082
+      cp manifests/nexus/registry.crt  /etc/docker/certs.d/nexus:8082/ca.crt
+      ```
+- #### Create Nexus Repository
+     This script will start minikube, and runs all kubernates manifest files to create  Nexus 
+  ```bash
+   bash nexus.sh
+  ```
 - #### Add DNS records in the host machine 
-     To access Jenkins, and Nexus dashboard from you host machine browser, in addtion to the deployed website itself, we need to set this records in /etc/hosts
+     To access Jenkins, and Nexus dashboard from your local browser, in addtion to the deployed website itself, we need to set this records in /etc/hosts
 ```bash
 sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
 sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
 ```
-- #### Create ingress rules for Nexus and Jenkins using HTTPS through NGINX controller
+
+- #### Create a minikube tunnel to access the Kubernates cluster from the host machine
 ```bash
-cd manifests/ingress/
-kubectl apply -f  .
-```
-- #### enable NGINX controller in minikube
-```bash
-minikube addons enable ingress
-```
--#### Create a minikube tunnel to access the Kubernates cluster from the host machine
-```bash
-minikube tunnel
+minikube tunnel 
 ```
 - #### Access nexus dashboard from the Host Machine: 
-  The URL of Nexus dashboard : https://nexus.dashboard/ . 
+  The URL of Nexus dashboard : https://nexus.dashboard/. <br> 
   To login, you need the password that resides in the nexus pod, you can get it using this command:
   ```bash
   kubectl exec nexus-0 -c nexus -- cat /nexus-data/admin.password
   ```
-  change the password and make sure to set the same password in Jenkins Pipline,also enable "Enable anonymous access"
+  change the password and make sure to set the same password in Jenkins Pipline, also enable "Enable anonymous access"
+
+![nexus](https://user-images.githubusercontent.com/69608603/229383371-0d250b7a-b129-486b-9bfc-a2bddfea459e.png)
+
 
 - #### Create a hosted local Docker repository.
   - Set a name for the reposictory 
-  -  configure to use HTTPS with port:8082 .
+  - Configure to use HTTPS with port:8082 .
   - Enable anonymous pull . 
-  - in realms,  Enable docker bearer token
+  - In realms,  Enable docker bearer token
+- #### Create Jenkins :
+     This script will Create the  Jenkins image from the Docker file, push it to Nexus, run the Kubernates manifest files to create Jenkins  
+  ```bash
+   bash jenkins.sh
+  ```
+- #### Access jenkins dashboard :
+    https://jenkins.dashboard <br>
+    Jenkins user : hamdy <br>
+    Jenkins pass : VTG266iFe4QfEBYL2eNRHH <br>
+    
+![jenkins](https://user-images.githubusercontent.com/69608603/229383523-14960241-d636-4e29-bbc2-b7651c9870b0.png)
 
-- ### create the Jenkins image and push it in nexus
+- #### Run GoViolin Website
 ```bash
-cd JenkinsImage/
-docker build -t nexus:8082/jenkins:latest .
-
-docker login nexus:8082 -u admin -p admin
-
-docker push nexus:8082/jenkins:latest
-
-cd manifests/jenkins
-
-kubectl apply -f .
+  bash app.sh
 ```
-### check that jenkins pod are working
-kubectl  get pods
 
-### Access jenkins dashboard :
-    https://jenkins.dashboard
-    Jenkins user : hamdy
-    Jenkins pass : VTG266iFe4QfEBYL2eNRHH
-
-### Run GoViolin Website
-```bash
- cd app/
- docker build -t nexus:8082/goviolin .
- docker push nexus:8082/goviolin
-```
-```bash
- cd manifests/GoViolin/
- kubectl apply -f . -n app
-```
 ### Access the Website:
     https://goviolin.com/
 
+![goviolin](https://user-images.githubusercontent.com/69608603/229383473-3d5b955b-6aea-4578-a831-abc2aa47561a.png)
 
 
 
