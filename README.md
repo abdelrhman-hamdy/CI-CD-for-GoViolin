@@ -5,7 +5,7 @@
 - [Introuduction](#introduction-)
 - [Tools](#tools-)
 - [Diagram](#diagram-)
-- [Set the Project](#set-the-project-)
+- [Set the Project](#set-the-cluster-)
 - [Run The Pipeline](#run-the-piplinr)
 
 ## Introduction : 
@@ -21,61 +21,69 @@ By following the project, you will have a fully functional website deployment on
 
 ## Diagram : 
  <p align="center">
-<img  src="https://user-images.githubusercontent.com/69608603/229364110-19698991-699d-4f59-a1a8-b436388c21cd.png" alt="centered image" >
+<img  src="https://user-images.githubusercontent.com/69608603/229376532-55c408a4-9d1b-4eed-ade4-d8d201b7ffab.png" alt="centered image" >
 </p>
+ 
 
+## Set the Cluster : 
+Note : Make sure to have Kubectl,</b> and Minikube installed on your local machine 
 
-## Set the Project: 
-
-
-
+- #### Start the minikube : 
+```bash
 minikube start
+```
 
-### Create the Nexus repository manager
+- #### Create the Nexus repository manager statefulset
 ```bash
 cd manifests/nexus/
 kubectl apply -f .
 ```
-### Check Nexus pods 
+- #### Check Nexus pod is up and running
 ```bash
  kubectl get pods
 ```
-### Add nexus HTTPS certificate to minikube
+- #### Add nexus HTTPS Certificate to minikube :
+     In order for minikube and jenkins to pull and push Docker images securely from Nexus , we need to enable HTTPS in nexus, and trust its certificate in minikube 
 ```bash
-minikube ssh 'sudo mkdir /etc/docker/certs.d/nexus:8082'
+cd manifests/nexus/
+minikube ssh 'sudo mkdir -p /etc/docker/certs.d/nexus:8082'
 minikube cp registry.crt /etc/docker/certs.d/nexus:8082/ca.crt
 minikube ssh 'ls  /etc/docker/certs.d/nexus:8082/ca.crt'
 ```
-### Add DNS values in the host machine in order to access Jenkins and Nexus dashboards from browser
+- #### Add DNS records in the host machine 
+     To access Jenkins, and Nexus dashboard from you host machine browser, in addtion to the deployed website itself, we need to set this records in /etc/hosts
 ```bash
 sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
 sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
 ```
-### Create ingress rules to access Nexus and Jenkins using HTTPS through NGINX controller
+- #### Create ingress rules for Nexus and Jenkins using HTTPS through NGINX controller
 ```bash
 cd manifests/ingress/
 kubectl apply -f  .
 ```
-### enable NGINX controller in minikube
+- #### enable NGINX controller in minikube
 ```bash
 minikube addons enable ingress
 ```
-### Create a minikube tunnelling to access the Kubernates cluster from the host machine
+-#### Create a minikube tunnel to access the Kubernates cluster from the host machine
 ```bash
 minikube tunnel
 ```
-
-### Access nexus dashboard from the Host Machine
-  the URL of Nexus dashboard : https://nexus.dashboard/
-  To login, you need a password that resides in the nexus pod, you can get it using this command:
+- #### Access nexus dashboard from the Host Machine: 
+  The URL of Nexus dashboard : https://nexus.dashboard/ . 
+  To login, you need the password that resides in the nexus pod, you can get it using this command:
   ```bash
   kubectl exec nexus-0 -c nexus -- cat /nexus-data/admin.password
   ```
   change the password and make sure to set the same password in Jenkins Pipline,also enable "Enable anonymous access"
 
-create a hosted docker hosted in https port 8082 , enable anonymous pull , in realms  enable docker bearer token
+- #### Create a hosted local Docker repository.
+  - Set a name for the reposictory 
+  -  configure to use HTTPS with port:8082 .
+  - Enable anonymous pull . 
+  - in realms,  Enable docker bearer token
 
-### create the Jenkins image and push it in nexus
+- ### create the Jenkins image and push it in nexus
 ```bash
 cd JenkinsImage/
 docker build -t nexus:8082/jenkins:latest .
