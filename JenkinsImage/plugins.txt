@@ -1,3 +1,6 @@
+docker-plugin
+docker-workflow
+kubernetes
 configuration-as-code
 pipeline-npm
 global-slack-notifier
@@ -52,4 +55,3 @@ emailext-template
 mailer
 locale
 localization-zh-cn
-kubernetes

@@ -16,7 +16,7 @@ pipeline {
         NEXUS_USER = 'admin'
         KUBECONFIG_PATH = 'connect_jenkins_kubernates/Kubernates_config_for_jenkins'
         DEPLOYMENT_NAME = 'goviolin'
-        DEPLOYMENT_NAMESPACE = 'default'
+        DEPLOYMENT_NAMESPACE = 'app'
         
     }
 

@@ -52,3 +52,4 @@ RUN ./aws/install
 RUN apt-get install python3-pip -y
 
 RUN apt-get install docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+RUN apt-get install iputils-ping iputils-tracepath -y

@@ -12,6 +12,17 @@ spec:
       labels:
         app: jenkins
     spec:
+
+      initContainers:
+      - name: create-dir-and-add-files
+        image: busybox
+        command: ['sh', '-c', 'mkdir /var/jenkins_home/docker && cp /config/* /var/jenkins_home/docker/']
+        volumeMounts:
+        - name: docker-certs
+          mountPath: /config
+        - name: docker-secrets
+          mountPath: /var/jenkins_home
+      
       containers:
       - name: jenkins
         image: nexus:8082/jenkins:latest 
@@ -22,20 +33,17 @@ spec:
         - name: jenkins-data
           mountPath: /var/jenkins_home
         
-        - name: kubernates-secrets
-          mountPath: /var/jenkins_home
-          subPath: kubernates_secrets
-
-        - name: cluster-secrets
-          mountPath: /var/jenkins_home/kubernates_secrets/
-
-
+        - name: docker-secrets
+          mountPath: /var/jenkins_home/docker
+          subPath: docker
       volumes:    
-      - name: cluster-secrets
+      - name: docker-certs
         secret:
-          secretName: cluster-secrets
-      - name : kubernates-secrets
+          secretName: docker-certs
+
+      - name : docker-secrets
         emptyDir: {}
+        
   volumeClaimTemplates:
   - metadata:
       name: jenkins-data
