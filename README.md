@@ -1,3 +1,32 @@
+
+<h3 align="center">GoViolin</h3>
+
+## Table of contents :
+- [Introuduction](#introduction-)
+- [Tools](#tools-)
+- [Diagram](#diagram-)
+- [Set the Project](#set-the-project)
+- [Run The Pipeline](#run-the-piplinr)
+
+## Introduction : 
+
+In this project, a website written in GO names GoViolin was deployed on a Kubernetes cluster. a Jenkins pipeline and a Nexus local repository were created in separate namespace within the Kubernetes cluster. The Jenkins pipeline will automate the build and deployment of our application, while the Nexus repository will serve as a centralized location for storing and managing our Docker images.
+
+By following the project, you will have a fully functional website deployment on Kubernetes with a streamlined CI/CD pipeline
+
+## Tools : 
+<a href="https://www.jenkins.io" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/jenkins/jenkins-icon.svg" alt="jenkins" width="40" height="40"/> </a> <a href="https://www.docker.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a>
+<a><img src="https://assets-global.website-files.com/5f10ed4c0ebf7221fb5661a5/5f2af61146c55b6e172fa5b3_NexusRepo_Icon.png" alt="Ansible" width="40" height="40"/> </a>
+<a><img src="https://juststickers.in/wp-content/uploads/2018/11/kubernetes-wordmark.png" alt="Ansible" width="40" height="40"/> </a>
+
+## Diagram : 
+ <p align="center">
+<img  src="https://user-images.githubusercontent.com/69608603/229364110-19698991-699d-4f59-a1a8-b436388c21cd.png" alt="centered image" >
+</p>
+
+
+## Prerequisites 
+
 minikube start
 
 ### Create the Nexus repository manager
