@@ -1,45 +1,46 @@
 minikube start
 
-### creating nexus repository manager statefulset
+### Create the Nexus repository manager
 ```bash
 cd manifests/nexus/
 kubectl apply -f .
 ```
-### watch the pod until it become up and running
+### Check Nexus pods 
 ```bash
- kubectl  get pods
+ kubectl get pods
 ```
-### add nexus HTTPS certificate to minikube
+### Add nexus HTTPS certificate to minikube
 ```bash
 minikube ssh 'sudo mkdir /etc/docker/certs.d/nexus:8082'
 minikube cp registry.crt /etc/docker/certs.d/nexus:8082/ca.crt
 minikube ssh 'ls  /etc/docker/certs.d/nexus:8082/ca.crt'
 ```
-### add DNS resolutio names in the host in order to access from the browser
+### Add DNS values in the host machine in order to access Jenkins and Nexus dashboards from browser
 ```bash
 sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
 sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
 ```
-### create ingress rules to access nexus and jenkins using HTTPS through NGINX
+### Create ingress rules to access Nexus and Jenkins using HTTPS through NGINX controller
 ```bash
 cd manifests/ingress/
 kubectl apply -f  .
 ```
-### enable NGIX controller
+### enable NGINX controller in minikube
 ```bash
 minikube addons enable ingress
 ```
-### create a minikube tunnel to access the cluster
+### Create a minikube tunnelling to access the Kubernates cluster from the host machine
 ```bash
 minikube tunnel
 ```
-### from the host machine open descires browser and access nexus
-in browser type :  https://nexus.dashboard/
 
-
-To login you need the password in nexus pod : kubectl exec nexus-0 -c nexus -- cat /nexus-data/admin.password
-
-change password to admin admin , Enable anonymous access
+### Access nexus dashboard from the Host Machine
+  the URL of Nexus dashboard : https://nexus.dashboard/
+  To login, you need a password that resides in the nexus pod, you can get it using this command:
+  ```bash
+  kubectl exec nexus-0 -c nexus -- cat /nexus-data/admin.password
+  ```
+  change the password and make sure to set the same password in Jenkins Pipline,also enable "Enable anonymous access"
 
 create a hosted docker hosted in https port 8082 , enable anonymous pull , in realms  enable docker bearer token
 
