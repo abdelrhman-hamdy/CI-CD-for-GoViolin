@@ -1,32 +1,39 @@
 minikube start
 
-# creating nexus repository manager statefulset
+### creating nexus repository manager statefulset
+```bash
 cd manifests/nexus/
 kubectl apply -f .
-
-# watch the pod until it become up and running
-watch kubectl  get pods
-
-# add nexus HTTPS certificate to minikube
+```
+### watch the pod until it become up and running
+```bash
+ kubectl  get pods
+```
+### add nexus HTTPS certificate to minikube
+```bash
 minikube ssh 'sudo mkdir /etc/docker/certs.d/nexus:8082'
 minikube cp registry.crt /etc/docker/certs.d/nexus:8082/ca.crt
 minikube ssh 'ls  /etc/docker/certs.d/nexus:8082/ca.crt'
-
-# add DNS resolutio names in the host in order to access from the browser
+```
+### add DNS resolutio names in the host in order to access from the browser
+```bash
 sudo sh -c "echo '<<minikube ip >> jenkins.dashboard nexus.dashboard goviolin.com  ' >> /etc/hosts"
 sudo sh -c "echo ' <<nexus service ip >> nexus'  >> /etc/hosts"
-
-# create ingress rules to access nexus and jenkins using HTTPS through NGINX
+```
+### create ingress rules to access nexus and jenkins using HTTPS through NGINX
+```bash
 cd manifests/ingress/
 kubectl apply -f  .
-
-# enable NGIX controller
+```
+### enable NGIX controller
+```bash
 minikube addons enable ingress
-
-# create a minikube tunnel to access the cluster
+```
+### create a minikube tunnel to access the cluster
+```bash
 minikube tunnel
-
-# from the host machine open descires browser and access nexus
+```
+### from the host machine open descires browser and access nexus
 in browser type :  https://nexus.dashboard/
 
 
@@ -36,9 +43,9 @@ change password to admin admin , Enable anonymous access
 
 create a hosted docker hosted in https port 8082 , enable anonymous pull , in realms  enable docker bearer token
 
-# create the Jenkins image and push it in nexus
+### create the Jenkins image and push it in nexus
+```bash
 cd JenkinsImage/
-
 docker build -t nexus:8082/jenkins:latest .
 
 docker login nexus:8082 -u admin -p admin
@@ -48,8 +55,8 @@ docker push nexus:8082/jenkins:latest
 cd manifests/jenkins
 
 kubectl apply -f .
-
-# check that jenkins pod are working
+```
+### check that jenkins pod are working
 kubectl  get pods
 
 From browser you can access jenkins dashboard from :
@@ -58,7 +65,7 @@ https://jenkins.dashboard/
 
 Jenkins user : hamdy , jenkins pass : VTG266iFe4QfEBYL2eNRHH
 
-
+```bash
  cd app/
  docker build -t nexus:8082/goviolin .
  docker push nexus:8082/goviolin
@@ -66,7 +73,7 @@ Jenkins user : hamdy , jenkins pass : VTG266iFe4QfEBYL2eNRHH
  cd manifests/GoViolin/
 
  kubectl apply -f . -n app
-
+```
  from browser
  https://goviolin.com/
 
