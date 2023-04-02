@@ -60,23 +60,23 @@ kubectl apply -f .
 ### check that jenkins pod are working
 kubectl  get pods
 
-From browser you can access jenkins dashboard from :
+### Access jenkins dashboard :
+    https://jenkins.dashboard
+    Jenkins user : hamdy
+    Jenkins pass : VTG266iFe4QfEBYL2eNRHH
 
-https://jenkins.dashboard/
-
-Jenkins user : hamdy , jenkins pass : VTG266iFe4QfEBYL2eNRHH
-
+### Run GoViolin Website
 ```bash
  cd app/
  docker build -t nexus:8082/goviolin .
  docker push nexus:8082/goviolin
-
+```
+```bash
  cd manifests/GoViolin/
-
  kubectl apply -f . -n app
 ```
- from browser
- https://goviolin.com/
+### Access the Website:
+    https://goviolin.com/
 
 
 
