@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM jenkins/jenkins:latest
+FROM jenkins/jenkins:2.393
 USER root
 # copy the list of plugins we want to install
 COPY plugins.txt /usr/share/jenkins/plugins.txt
@@ -53,3 +53,7 @@ RUN apt-get install python3-pip -y
 
 RUN apt-get install docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 RUN apt-get install iputils-ping iputils-tracepath -y
+RUN curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+
+RUN apt-get update -y && apt-get install -y kubectl
