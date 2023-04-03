@@ -31,7 +31,7 @@ By following the project, you will have a fully functional website deployment on
     - Trust the Nexus Certificate in the Docker installed in your local machine
       ```bash
       sudo mkdir -p /etc/docker/certs.d/nexus:8082
-      cp manifests/nexus/registry.crt  /etc/docker/certs.d/nexus:8082/ca.crt
+      sudo cp manifests/nexus/registry.crt  /etc/docker/certs.d/nexus:8082/ca.crt
       ```
 - #### Create Nexus Repository
      This script will start minikube, and runs all kubernates manifest files to create  Nexus 
